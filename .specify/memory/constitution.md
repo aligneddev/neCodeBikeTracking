@@ -150,6 +150,26 @@ Example: "User records a bike ride" slice includes:
 - Background function listening to CES to update RideProjection
 - Aspire AppHost configuration for frontend + API + database orchestration; Azure CLI deployment scripts for Static Web Apps (frontend) and Container Apps (API)
 
+### Vertical Slice Implementation Strategy: Minimal-First Approach
+
+After the application structure is built, implementation proceeds in **vertical slices with minimal functionality first**:
+
+1. **Identify Minimal Viable Feature**: Extract the smallest, testable piece of the specification that delivers user value (e.g., "User records a basic ride with just distance and date" vs. "User records ride with weather, auto-capture, and expense associations").
+2. **Implement Minimal Functionality**: Build only what's needed for this slice to work end-to-end:
+   - Blazor form with essential fields only
+   - API endpoint handling the core command
+   - Event and projection for persistence
+   - Database schema (migrations)
+   - No bells, whistles, or optional features
+3. **Test & Verify**: Run full test suite (unit, integration, E2E); deploy locally via `dotnet run` and manually verify the slice works as specified.
+4. **User Decision Point**: Once minimal slice is verified and working, present the user with options:
+   - **Approve Minimal & Iterate**: User approves the working slice, then we build next priority feature (additional fields, refinements, enhancement)
+   - **Expand Current Slice**: User requests additional functionality for the current slice before finalizing (e.g., "add weather capture" to the ride recording feature)
+   - **Pivot**: User validates that the minimal approach solves the problem; if solution is sufficient, ship as-is; otherwise, refine or fold into next slice
+5. **Repeat**: Each new feature/slice follows the same pattern: minimal implementation → test → user approval → expand or next slice
+
+**Rationale**: Minimal-first approach de-risks development by getting working code to user quickly; validates assumptions early; prevents over-engineering; enables user feedback to guide remaining work; reduces scope creep. Vertical slices remain deployable and testable at each iteration boundary. The Pragmatic Programmer calls this "Tracer Bullets" — get something working end-to-end before perfecting it.
+
 ### Definition of Done: Vertical Slice Completeness
 
 A vertical slice is **production-ready** only when all items are verified:
